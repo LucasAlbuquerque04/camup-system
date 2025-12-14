@@ -52,7 +52,7 @@ Antes de começar, você precisa ter instalado na sua máquina:
 
 ```bash
 cd ~
-git clone git@github.com:LucasAlbuquerque04/camup-system.git
+git clone https://github.com/LucasAlbuquerque04/camup-system.git
 cd camup-system
 ```
 
