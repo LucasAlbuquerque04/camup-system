@@ -1,0 +1,28 @@
+#!/bin/bash
+
+echo "🚀 Iniciando setup do CamUp..."
+
+echo "📦 Subindo containers..."
+docker compose up -d --build
+
+echo "⏳ Aguardando containers..."
+sleep 5
+
+echo "🔧 Instalando dependências PHP..."
+docker compose exec app composer install
+
+echo "⚙️ Configurando ambiente..."
+docker compose exec app cp .env.example .env
+
+echo "🔑 Gerando APP_KEY..."
+docker compose exec app php artisan key:generate
+
+echo "🗄️ Rodando migrations..."
+docker compose exec app php artisan migrate
+
+echo "🔐 Ajustando permissões..."
+docker compose exec app chown -R www-data:www-data storage bootstrap/cache
+docker compose exec app chmod -R 775 storage bootstrap/cache
+
+echo "✅ Setup finalizado!"
+echo "🌐 Acesse: http://localhost:8010"
