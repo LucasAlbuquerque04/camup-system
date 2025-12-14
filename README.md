@@ -1,6 +1,6 @@
 # CamUp 🚀
 
-CamUp é um projeto **educacional e prático** que simula o desenvolvimento de um **sistema web de gestão (ERP)** para pequenas e médias empresas, seguindo **processos, arquitetura e boas práticas usadas no mercado de trabalho**.
+CamUp é um projeto **educacional e prático** que simula o desenvolvimento de um sistema web de gestão (ERP) para pequenas e médias empresas, seguindo **processos, arquitetura e boas práticas usadas no mercado de trabalho**.
 
 O objetivo do projeto é:
 
@@ -11,7 +11,7 @@ O objetivo do projeto é:
 
 ## 📌 Visão geral do projeto
 
-O CamUp será um sistema modular de gestão para diferentes tipos de negócio (ex: dedetização, joalheria, etc.), onde cada empresa poderá ativar módulos conforme sua necessidade.
+O CamUp será um sistema **modular** de gestão para diferentes tipos de negócio (ex: dedetização, joalheria, etc.), onde cada empresa poderá ativar módulos conforme sua necessidade.
 
 Funcionalidades base (MVP):
 
@@ -28,7 +28,7 @@ Funcionalidades base (MVP):
 * **Banco de dados:** MySQL 8
 * **Servidor web:** Nginx
 * **Ambiente:** Docker + Docker Compose
-* **Frontend:** Blade + Tailwind
+* **Frontend:** Blade + Tailwind CSS
 * **Controle de versão:** Git + GitHub
 
 ---
@@ -37,17 +37,13 @@ Funcionalidades base (MVP):
 
 Antes de começar, você precisa ter instalado na sua máquina:
 
-1. **Git**
+* **Git**
+  [https://git-scm.com/](https://git-scm.com/)
 
-   * [https://git-scm.com/](https://git-scm.com/)
+* **Docker**
+  [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
 
-2. **Docker**
-
-   * [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
-
-3. **Docker Compose** (normalmente já vem com o Docker Desktop)
-
-> 💡 **Importante:** Não é necessário instalar PHP, MySQL ou Nginx localmente. Tudo roda via Docker.
+> 💡 Importante: **Não é necessário instalar PHP, MySQL ou Nginx localmente.** Tudo roda via Docker.
 
 ---
 
@@ -75,7 +71,7 @@ camup-system/
 
 ## 🐳 Subindo o ambiente com Docker
 
-Na **raiz do projeto** (`camup-system`), execute:
+Na raiz do projeto (`camup-system`), execute:
 
 ```bash
 docker compose up -d --build
@@ -84,7 +80,7 @@ docker compose up -d --build
 Esse comando irá:
 
 * Criar os containers (PHP, Nginx, MySQL)
-* Instalar dependências
+* Instalar o Composer dentro do container
 * Subir o ambiente local
 
 Para verificar se os containers estão rodando:
@@ -103,33 +99,45 @@ Entre no container da aplicação:
 docker compose exec app bash
 ```
 
-Agora execute os comandos **na ordem**:
+### ⚠️ IMPORTANTE — ordem dos comandos
 
-### 1️⃣ Copiar o arquivo de ambiente
+> **Nunca execute `php artisan` antes de rodar `composer install`.**
+
+### 1️⃣ Instalar dependências PHP (obrigatório)
+
+```bash
+composer install
+```
+
+Isso irá criar a pasta `vendor/`, necessária para o Laravel funcionar.
+
+---
+
+### 2️⃣ Copiar o arquivo de ambiente
 
 ```bash
 cp .env.example .env
 ```
 
-### 2️⃣ Gerar a chave da aplicação
+---
+
+### 3️⃣ Gerar a chave da aplicação
 
 ```bash
 php artisan key:generate
 ```
 
-### 3️⃣ Criar tabelas auxiliares (cache, sessão e filas)
-
-```bash
-php artisan cache:table
-php artisan session:table
-php artisan queue:table
-```
+---
 
 ### 4️⃣ Rodar as migrations
+
+> ℹ️ As tabelas de **cache, sessão e filas já existem por padrão neste projeto**.
 
 ```bash
 php artisan migrate
 ```
+
+---
 
 ### 5️⃣ Ajustar permissões (muito importante)
 
@@ -154,7 +162,7 @@ Abra o navegador e acesse:
 http://localhost:8010
 ```
 
-Você deverá ver a **tela padrão do Laravel**.
+Você deverá ver a tela padrão do Laravel.
 
 ---
 
@@ -190,34 +198,34 @@ docker compose exec app bash
 
 Seguimos um fluxo parecido com empresas:
 
-1. Nunca trabalhar direto na `main`
-2. Criar branch para cada tarefa:
+* ❌ Nunca trabalhar direto na `main`
+* Criar branch para cada tarefa:
 
 ```bash
 git checkout -b feat/nome-da-feature
 ```
 
-3. Commitar com mensagens claras:
+* Commitar com mensagens claras:
 
 ```bash
 git commit -m "feat: adicionar autenticação"
 ```
 
-4. Push da branch:
+* Push da branch:
 
 ```bash
 git push origin feat/nome-da-feature
 ```
 
-5. Abrir Pull Request no GitHub
-6. Fazer code review
-7. Merge na `main`
+* Abrir Pull Request no GitHub
+* Fazer code review
+* Merge na `main`
 
 ---
 
 ## 📚 Observações importantes
 
-* **Nunca** versionar o arquivo `.env`
+* Nunca versionar o arquivo `.env`
 * Sempre usar Docker
 * Sempre criar branch
 * Sempre abrir PR
@@ -226,7 +234,7 @@ git push origin feat/nome-da-feature
 
 ## 🎯 Objetivo educacional
 
-Este projeto não é apenas sobre código.
+Este projeto **não é apenas sobre código**.
 
 Ele existe para ensinar:
 
@@ -234,13 +242,13 @@ Ele existe para ensinar:
 * Como trabalhar em equipe
 * Como lidar com ambiente, erros e processos
 
-Se você é iniciante: **vá com calma, leia, teste e pergunte**.
+> Se você é iniciante: vá com calma, leia, teste e pergunte.
 
 ---
 
 ## 🤝 Contribuição
 
-Sugestões, melhorias e dúvidas são bem-vindas via issues ou pull requests.
+Sugestões, melhorias e dúvidas são bem-vindas via **issues** ou **pull requests**.
 
 ---
 
