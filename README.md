@@ -4,7 +4,7 @@ CamUp é um projeto **educacional e prático** que simula o desenvolvimento de u
 
 O objetivo do projeto é:
 
-* Evoluir desenvolvedores iniciantes/júnior para um nível mais próximo do **pleno**
+* Evoluir desenvolvedores iniciantes/júnior
 * Oferecer experiência real com **Docker, Git, Pull Requests, Code Review e organização de projeto**
 
 ---
@@ -28,7 +28,7 @@ Funcionalidades base (MVP):
 * **Banco de dados:** MySQL 8
 * **Servidor web:** Nginx
 * **Ambiente:** Docker + Docker Compose
-* **Frontend:** Blade + Vite
+* **Frontend:** Blade + Tailwind
 * **Controle de versão:** Git + GitHub
 
 ---
