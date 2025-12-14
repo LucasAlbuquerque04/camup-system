@@ -1,25 +1,247 @@
-# CamUp
+# CamUp 🚀
 
-Sistema web de gestão modular para pequenas e médias empresas.
+CamUp é um projeto **educacional e prático** que simula o desenvolvimento de um **sistema web de gestão (ERP)** para pequenas e médias empresas, seguindo **processos, arquitetura e boas práticas usadas no mercado de trabalho**.
 
-## Objetivo do Projeto
-Projeto educacional com foco em:
-- Aprimorar habilidades técnicas em desenvolvimento web
-- Simular processos reais de mercado
-- Trabalhar com arquitetura, versionamento e colaboração
+O objetivo do projeto é:
 
-## Stack
-- PHP (Laravel)
-- MySQL
-- Bootstrap
-- Docker
-- GitHub
+* Evoluir desenvolvedores iniciantes/júnior
+* Oferecer experiência real com **Docker, Git, Pull Requests, Code Review e organização de projeto**
 
-## Arquitetura
-Monólito modular com separação por domínios.
+---
 
-## Público-alvo
-Pequenas e médias empresas (ex: dedetização, comércio, serviços).
+## 📌 Visão geral do projeto
 
-## Status
-Em desenvolvimento inicial.
+O CamUp será um sistema modular de gestão para diferentes tipos de negócio (ex: dedetização, joalheria, etc.), onde cada empresa poderá ativar módulos conforme sua necessidade.
+
+Funcionalidades base (MVP):
+
+* Autenticação de usuários
+* Gestão de empresas
+* Estrutura modular
+* Base para financeiro, agenda, colaboradores, etc.
+
+---
+
+## 🧱 Stack utilizada
+
+* **Backend:** PHP 8.2 + Laravel
+* **Banco de dados:** MySQL 8
+* **Servidor web:** Nginx
+* **Ambiente:** Docker + Docker Compose
+* **Frontend:** Blade + Tailwind
+* **Controle de versão:** Git + GitHub
+
+---
+
+## ⚠️ Pré-requisitos
+
+Antes de começar, você precisa ter instalado na sua máquina:
+
+1. **Git**
+
+   * [https://git-scm.com/](https://git-scm.com/)
+
+2. **Docker**
+
+   * [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
+
+3. **Docker Compose** (normalmente já vem com o Docker Desktop)
+
+> 💡 **Importante:** Não é necessário instalar PHP, MySQL ou Nginx localmente. Tudo roda via Docker.
+
+---
+
+## 📥 Clonando o projeto
+
+Abra o terminal e execute:
+
+```bash
+cd ~
+git clone git@github.com:LucasAlbuquerque04/camup-system.git
+cd camup-system
+```
+
+Estrutura esperada:
+
+```text
+camup-system/
+├── docker/
+├── docker-compose.yml
+├── README.md
+└── src/
+```
+
+---
+
+## 🐳 Subindo o ambiente com Docker
+
+Na **raiz do projeto** (`camup-system`), execute:
+
+```bash
+docker compose up -d --build
+```
+
+Esse comando irá:
+
+* Criar os containers (PHP, Nginx, MySQL)
+* Instalar dependências
+* Subir o ambiente local
+
+Para verificar se os containers estão rodando:
+
+```bash
+docker ps
+```
+
+---
+
+## ⚙️ Configuração inicial do Laravel
+
+Entre no container da aplicação:
+
+```bash
+docker compose exec app bash
+```
+
+Agora execute os comandos **na ordem**:
+
+### 1️⃣ Copiar o arquivo de ambiente
+
+```bash
+cp .env.example .env
+```
+
+### 2️⃣ Gerar a chave da aplicação
+
+```bash
+php artisan key:generate
+```
+
+### 3️⃣ Criar tabelas auxiliares (cache, sessão e filas)
+
+```bash
+php artisan cache:table
+php artisan session:table
+php artisan queue:table
+```
+
+### 4️⃣ Rodar as migrations
+
+```bash
+php artisan migrate
+```
+
+### 5️⃣ Ajustar permissões (muito importante)
+
+```bash
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+```
+
+Saia do container:
+
+```bash
+exit
+```
+
+---
+
+## 🌐 Acessando o sistema
+
+Abra o navegador e acesse:
+
+```
+http://localhost:8010
+```
+
+Você deverá ver a **tela padrão do Laravel**.
+
+---
+
+## 🧪 Comandos úteis
+
+### Parar o ambiente
+
+```bash
+docker compose down
+```
+
+### Subir novamente
+
+```bash
+docker compose up -d
+```
+
+### Ver logs
+
+```bash
+docker compose logs -f
+```
+
+### Acessar o container da aplicação
+
+```bash
+docker compose exec app bash
+```
+
+---
+
+## 🔀 Fluxo de trabalho (Git)
+
+Seguimos um fluxo parecido com empresas:
+
+1. Nunca trabalhar direto na `main`
+2. Criar branch para cada tarefa:
+
+```bash
+git checkout -b feat/nome-da-feature
+```
+
+3. Commitar com mensagens claras:
+
+```bash
+git commit -m "feat: adicionar autenticação"
+```
+
+4. Push da branch:
+
+```bash
+git push origin feat/nome-da-feature
+```
+
+5. Abrir Pull Request no GitHub
+6. Fazer code review
+7. Merge na `main`
+
+---
+
+## 📚 Observações importantes
+
+* **Nunca** versionar o arquivo `.env`
+* Sempre usar Docker
+* Sempre criar branch
+* Sempre abrir PR
+
+---
+
+## 🎯 Objetivo educacional
+
+Este projeto não é apenas sobre código.
+
+Ele existe para ensinar:
+
+* Como projetos reais funcionam
+* Como trabalhar em equipe
+* Como lidar com ambiente, erros e processos
+
+Se você é iniciante: **vá com calma, leia, teste e pergunte**.
+
+---
+
+## 🤝 Contribuição
+
+Sugestões, melhorias e dúvidas são bem-vindas via issues ou pull requests.
+
+---
+
+🚀 **Bem-vindo ao CamUp. Aqui a ideia é aprender do jeito certo.**
