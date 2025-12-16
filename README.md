@@ -1,19 +1,19 @@
 # CamUp 🚀
 
-CamUp é um projeto **educacional e prático** que simula o desenvolvimento de um sistema web de gestão (ERP) para pequenas e médias empresas, seguindo **processos, arquitetura e boas práticas usadas no mercado de trabalho**.
+CamUp é um projeto educacional e prático que simula o desenvolvimento de um sistema web de gestão (ERP) para pequenas e médias empresas, seguindo processos, arquitetura e boas práticas usadas no mercado de trabalho.
 
 O objetivo do projeto é:
 
 * Evoluir desenvolvedores iniciantes/júnior
-* Oferecer experiência real com **Docker, Git, Pull Requests, Code Review e organização de projeto**
+* Oferecer experiência real com Docker, Git, Pull Requests, Code Review e organização de projeto
 
 ---
 
 ## 📌 Visão geral do projeto
 
-O CamUp será um sistema **modular** de gestão para diferentes tipos de negócio (ex: dedetização, joalheria, etc.), onde cada empresa poderá ativar módulos conforme sua necessidade.
+O CamUp será um sistema modular de gestão para diferentes tipos de negócio (ex: dedetização, joalheria, etc.), onde cada empresa poderá ativar módulos conforme sua necessidade.
 
-Funcionalidades base (MVP):
+**Funcionalidades base (MVP):**
 
 * Autenticação de usuários
 * Gestão de empresas
@@ -37,53 +37,93 @@ Funcionalidades base (MVP):
 
 Antes de começar, você precisa ter instalado na sua máquina:
 
-* **Git**
-  [https://git-scm.com/](https://git-scm.com/)
+* Git
+* Docker
+* Docker Compose (normalmente já vem com o Docker Desktop)
 
-* **Docker**
-  [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
+🔔 **Importante:**
 
-> 💡 Importante: **Não é necessário instalar PHP, MySQL ou Nginx localmente.** Tudo roda via Docker.
+* Não é necessário instalar PHP, MySQL ou Nginx localmente
+* Todo o ambiente roda via Docker
 
 ---
 
 ## 📥 Clonando o projeto
 
-Abra o terminal e execute:
-
 ```bash
 cd ~
-git clone git@github.com:LucasAlbuquerque04/camup-system.git
+git clone https://github.com/LucasAlbuquerque04/camup-system.git
 cd camup-system
 ```
 
 Estrutura esperada:
 
-```text
+```
 camup-system/
 ├── docker/
 ├── docker-compose.yml
+├── setup.sh
 ├── README.md
 └── src/
 ```
 
 ---
 
-## 🐳 Subindo o ambiente com Docker
+## 🐳 Subindo o ambiente (escolha uma opção)
 
-Na raiz do projeto (`camup-system`), execute:
+Este projeto oferece **duas formas de setup**:
+
+1️⃣ **Setup automático (recomendado para iniciantes)**
+2️⃣ **Setup manual (para quem quer aprender cada etapa)**
+
+Você pode escolher a que fizer mais sentido para você.
+
+---
+
+## 🚀 Opção 1 — Setup automático (recomendado)
+
+Essa opção sobe todo o ambiente e configura o Laravel automaticamente.
+
+### ▶️ Passo a passo
+
+Na raiz do projeto, execute:
+
+```bash
+chmod +x setup.sh
+./setup.sh
+```
+
+O script irá:
+
+* Subir os containers Docker
+* Copiar o `.env.example` para `.env`
+* Gerar a `APP_KEY`
+* Rodar as migrations
+* Ajustar permissões necessárias
+
+Ao final, acesse:
+
+```
+http://localhost:8010
+```
+
+Se tudo deu certo, você verá a tela padrão do Laravel.
+
+---
+
+## 🛠️ Opção 2 — Setup manual (modo aprendizado)
+
+Essa opção é ideal se você **quer entender cada passo** do processo.
+
+### 1️⃣ Subir os containers
+
+Na raiz do projeto:
 
 ```bash
 docker compose up -d --build
 ```
 
-Esse comando irá:
-
-* Criar os containers (PHP, Nginx, MySQL)
-* Instalar o Composer dentro do container
-* Subir o ambiente local
-
-Para verificar se os containers estão rodando:
+Verifique se os containers estão rodando:
 
 ```bash
 docker ps
@@ -91,37 +131,29 @@ docker ps
 
 ---
 
-## ⚙️ Configuração inicial do Laravel
-
-Entre no container da aplicação:
+### 2️⃣ Acessar o container da aplicação
 
 ```bash
 docker compose exec app bash
 ```
 
-### ⚠️ IMPORTANTE — ordem dos comandos
-
-> **Nunca execute `php artisan` antes de rodar `composer install`.**
-
-### 1️⃣ Instalar dependências PHP (obrigatório)
-
-```bash
-composer install
-```
-
-Isso irá criar a pasta `vendor/`, necessária para o Laravel funcionar.
-
 ---
 
-### 2️⃣ Copiar o arquivo de ambiente
+### 3️⃣ Configuração inicial do Laravel
+
+#### Copiar o arquivo de ambiente
 
 ```bash
 cp .env.example .env
 ```
 
+🔔 **Observação importante:**
+Este projeto utiliza **MySQL via Docker**.
+Não altere o `DB_CONNECTION` para sqlite.
+
 ---
 
-### 3️⃣ Gerar a chave da aplicação
+#### Gerar a chave da aplicação
 
 ```bash
 php artisan key:generate
@@ -129,17 +161,17 @@ php artisan key:generate
 
 ---
 
-### 4️⃣ Rodar as migrations
-
-> ℹ️ As tabelas de **cache, sessão e filas já existem por padrão neste projeto**.
+#### Rodar as migrations
 
 ```bash
 php artisan migrate
 ```
 
+📌 As tabelas de cache, sessão e filas **já estão configuradas** e não precisam ser criadas manualmente.
+
 ---
 
-### 5️⃣ Ajustar permissões (muito importante)
+#### Ajustar permissões (muito importante)
 
 ```bash
 chown -R www-data:www-data storage bootstrap/cache
@@ -162,31 +194,29 @@ Abra o navegador e acesse:
 http://localhost:8010
 ```
 
-Você deverá ver a tela padrão do Laravel.
-
 ---
 
 ## 🧪 Comandos úteis
 
-### Parar o ambiente
+Parar o ambiente:
 
 ```bash
 docker compose down
 ```
 
-### Subir novamente
+Subir novamente:
 
 ```bash
 docker compose up -d
 ```
 
-### Ver logs
+Ver logs:
 
 ```bash
 docker compose logs -f
 ```
 
-### Acessar o container da aplicação
+Acessar o container da aplicação:
 
 ```bash
 docker compose exec app bash
@@ -196,16 +226,16 @@ docker compose exec app bash
 
 ## 🔀 Fluxo de trabalho (Git)
 
-Seguimos um fluxo parecido com empresas:
+Seguimos um fluxo parecido com empresas reais:
 
-* ❌ Nunca trabalhar direto na `main`
-* Criar branch para cada tarefa:
+* Nunca trabalhar direto na `main`
+* Criar uma branch por tarefa:
 
 ```bash
 git checkout -b feat/nome-da-feature
 ```
 
-* Commitar com mensagens claras:
+* Commits claros e objetivos:
 
 ```bash
 git commit -m "feat: adicionar autenticação"
@@ -217,8 +247,9 @@ git commit -m "feat: adicionar autenticação"
 git push origin feat/nome-da-feature
 ```
 
-* Abrir Pull Request no GitHub
-* Fazer code review
+* Abrir Pull Request
+* Code Review
+* Merge na `stage`
 * Merge na `main`
 
 ---
@@ -234,7 +265,7 @@ git push origin feat/nome-da-feature
 
 ## 🎯 Objetivo educacional
 
-Este projeto **não é apenas sobre código**.
+Este projeto não é apenas sobre código.
 
 Ele existe para ensinar:
 
@@ -242,13 +273,7 @@ Ele existe para ensinar:
 * Como trabalhar em equipe
 * Como lidar com ambiente, erros e processos
 
-> Se você é iniciante: vá com calma, leia, teste e pergunte.
-
----
-
-## 🤝 Contribuição
-
-Sugestões, melhorias e dúvidas são bem-vindas via **issues** ou **pull requests**.
+Se você é iniciante: vá com calma, leia, teste e pergunte.
 
 ---
 

@@ -24,5 +24,12 @@ echo "🔐 Ajustando permissões..."
 docker compose exec app chown -R www-data:www-data storage bootstrap/cache
 docker compose exec app chmod -R 775 storage bootstrap/cache
 
+echo "🚀 Building frontend assets..."
+
+docker exec camup_app npm install
+docker exec camup_app npm run build
+
+echo "✅ Build concluído! Os assets estão em src/public/build/"
+
 echo "✅ Setup finalizado!"
 echo "🌐 Acesse: http://localhost:8010"
