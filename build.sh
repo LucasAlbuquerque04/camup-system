@@ -2,8 +2,8 @@
 
 echo "🚀 Building frontend assets..."
 
-# Build dos assets dentro do container
+# Build assets inside the container
 docker exec camup_app npm install
 docker exec camup_app npm run build
 
-echo "✅ Build concluído! Os assets estão em src/public/build/"
+echo "✅ Build completed! Assets are in src/public/build/"

@@ -6,7 +6,7 @@ services:
     container_name: camup_app
     volumes:
       - ./src:/var/www
-      - /var/www/node_modules  # Evita conflito com node_modules do host
+      - /var/www/node_modules  # Prevents conflict with host node_modules
     working_dir: /var/www
     depends_on:
       - db
