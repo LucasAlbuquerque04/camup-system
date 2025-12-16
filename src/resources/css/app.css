@@ -22,6 +22,11 @@
     --color-primary-900: oklch(0.22 0.09 240);
 }
 
+/* Alpine.js cloaking */
+[x-cloak] {
+    display: none !important;
+}
+
 /* Custom Utilities */
 @layer utilities {
     .scrollbar-thin {
