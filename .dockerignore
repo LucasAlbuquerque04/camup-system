@@ -1,0 +1,8 @@
+src/node_modules
+src/vendor
+src/.env
+src/storage
+src/bootstrap/cache
+.git
+.gitignore
+README.md
