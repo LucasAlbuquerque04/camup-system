@@ -6,7 +6,7 @@ services:
     container_name: camup_app
     volumes:
       - ./src:/var/www
-      - /var/www/node_modules  # Evita conflito com node_modules do host
+      - /var/www/node_modules
     working_dir: /var/www
     depends_on:
       - db
@@ -40,9 +40,11 @@ services:
   db:
     image: mysql:8.0
     container_name: camup_db
+    ports:
+      - "3307:3306"
     environment:
-      MYSQL_DATABASE: camup
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: camup
     volumes:
       - db_data:/var/lib/mysql
 
