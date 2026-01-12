@@ -3,39 +3,32 @@
 namespace App\Http\Controllers\Financial;
 
 use App\Http\Controllers\Controller;
-use App\Models\Category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $categories = Auth::user()->categories()->get();
-        return view('financial.categories.index', compact('categories'));
+        // TODO: Implementar listagem e gerenciamento de categorias
+        return view('financial.categories.index');
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|in:income,expense',
-            'color' => 'nullable|string|max:7',
-        ]);
-
-        Auth::user()->categories()->create($validated);
-
-        return back()->with('status', 'Categoria criada com sucesso!');
+        // TODO: Implementar validação e salvamento
     }
 
-    public function destroy(Category $category)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
     {
-        if ($category->user_id !== Auth::id()) {
-            abort(403);
-        }
-
-        $category->delete();
-
-        return back()->with('status', 'Categoria excluída.');
+        // TODO: Implementar exclusão
     }
 }
