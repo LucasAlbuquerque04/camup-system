@@ -1,6 +1,6 @@
 # CamUp 🚀
 
-CamUp é um projeto educacional e prático que simula o desenvolvimento de um sistema web de gestão (ERP) para pequenas e médias empresas, seguindo processos, arquitetura e boas práticas usadas no mercado de trabalho.
+CamUp é um projeto educacional e prático que simula o desenvolvimento de um **Sistema de Controle Financeiro Pessoal**, seguindo processos, arquitetura e boas práticas usadas no mercado de trabalho.
 
 O objetivo do projeto é:
 
@@ -11,14 +11,15 @@ O objetivo do projeto é:
 
 ## 📌 Visão geral do projeto
 
-O CamUp será um sistema modular de gestão para diferentes tipos de negócio (ex: dedetização, joalheria, etc.), onde cada empresa poderá ativar módulos conforme sua necessidade.
+O CamUp agora é um sistema focado na gestão financeira pessoal, permitindo que cada usuário tenha controle total sobre suas finanças em um ambiente isolado e seguro.
 
-**Funcionalidades base (MVP):**
+**Funcionalidades base:**
 
-* Autenticação de usuários
-* Gestão de empresas
-* Estrutura modular
-* Base para financeiro, agenda, colaboradores, etc.
+* **Autenticação**: Login e registro seguros por usuário.
+* **Dashboard Financeiro**: Acompanhamento de saldo, receitas e despesas em tempo real.
+* **Transações**: Registro simples e rápido de entradas e saídas.
+* **Categorias**: Organização personalizada (ex: Alimentação, Transporte) com cores.
+* **Tema Visual**: Design moderno (Roxo/Branco) com suporte total a **Dark Mode**.
 
 ---
 
@@ -28,7 +29,7 @@ O CamUp será um sistema modular de gestão para diferentes tipos de negócio (e
 * **Banco de dados:** MySQL 8
 * **Servidor web:** Nginx
 * **Ambiente:** Docker + Docker Compose
-* **Frontend:** Blade + Tailwind CSS
+* **Frontend:** Blade + Tailwind CSS v4 + Alpine.js
 * **Controle de versão:** Git + GitHub
 
 ---
@@ -80,7 +81,7 @@ Você pode escolher a que fizer mais sentido para você.
 
 ---
 
-## 🚀 Opção 1 — Setup automático (recomendado)
+## � Opção 1 — Setup automático (recomendado)
 
 Essa opção sobe todo o ambiente e configura o Laravel automaticamente.
 
@@ -96,9 +97,10 @@ chmod +x setup.sh
 O script irá:
 
 * Subir os containers Docker
-* Copiar o `.env.example` para `.env`
+* Instalar dependências (Composer e NPM)
 * Gerar a `APP_KEY`
-* Rodar as migrations
+* Rodar as migrations (Banco de dados financeiro)
+* Compilar os assets (Tailwind CSS)
 * Ajustar permissões necessárias
 
 Ao final, acesse:
@@ -107,7 +109,7 @@ Ao final, acesse:
 http://localhost:8010
 ```
 
-Se tudo deu certo, você verá a tela padrão do Laravel.
+Se tudo deu certo, você verá a tela de Login do CamUp.
 
 ---
 
@@ -167,7 +169,18 @@ php artisan key:generate
 php artisan migrate
 ```
 
-📌 As tabelas de cache, sessão e filas **já estão configuradas** e não precisam ser criadas manualmente.
+📌 As tabelas de usuários, categorias e transações serão criadas.
+
+---
+
+#### Compilar o Frontend
+
+Em outro terminal (fora do container app), rode o build dos assets:
+
+```bash
+docker exec camup_app npm install
+docker exec camup_app npm run build
+```
 
 ---
 
@@ -176,12 +189,6 @@ php artisan migrate
 ```bash
 chown -R www-data:www-data storage bootstrap/cache
 chmod -R 775 storage bootstrap/cache
-```
-
-Saia do container:
-
-```bash
-exit
 ```
 
 ---
@@ -238,7 +245,7 @@ git checkout -b feat/nome-da-feature
 * Commits claros e objetivos:
 
 ```bash
-git commit -m "feat: adicionar autenticação"
+git commit -m "feat: adicionar nova categoria"
 ```
 
 * Push da branch:
@@ -249,8 +256,7 @@ git push origin feat/nome-da-feature
 
 * Abrir Pull Request
 * Code Review
-* Merge na `stage`
-* Merge na `main`
+* Merge na `stage` e depois na `main`
 
 ---
 
@@ -258,8 +264,7 @@ git push origin feat/nome-da-feature
 
 * Nunca versionar o arquivo `.env`
 * Sempre usar Docker
-* Sempre criar branch
-* Sempre abrir PR
+* Sempre manter o código organizado (Padrão PSR-12)
 
 ---
 
@@ -271,7 +276,7 @@ Ele existe para ensinar:
 
 * Como projetos reais funcionam
 * Como trabalhar em equipe
-* Como lidar com ambiente, erros e processos
+* Como criar sistemas escaláveis e organizados
 
 Se você é iniciante: vá com calma, leia, teste e pergunte.
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🚀 Iniciando setup do CamUp..."
+echo "🚀 Iniciando setup do CamUp Financeiro..."
 
 echo "📦 Subindo containers..."
 docker compose up -d --build
@@ -17,7 +17,7 @@ docker compose exec app cp .env.example .env
 echo "🔑 Gerando APP_KEY..."
 docker compose exec app php artisan key:generate
 
-echo "🗄️ Rodando migrations..."
+echo "🗄️ Rodando migrations (Schema Financeiro)..."
 docker compose exec app php artisan migrate
 
 echo "🔐 Ajustando permissões..."

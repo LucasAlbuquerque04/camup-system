@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 @source '../**/*.blade.php';
@@ -8,18 +10,21 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    
-    /* Custom Brand Colors */
-    --color-primary-50: oklch(0.97 0.02 240);
-    --color-primary-100: oklch(0.94 0.04 240);
-    --color-primary-200: oklch(0.88 0.08 240);
-    --color-primary-300: oklch(0.78 0.12 240);
-    --color-primary-400: oklch(0.66 0.16 240);
-    --color-primary-500: oklch(0.55 0.20 240);
-    --color-primary-600: oklch(0.45 0.18 240);
-    --color-primary-700: oklch(0.38 0.15 240);
-    --color-primary-800: oklch(0.30 0.12 240);
-    --color-primary-900: oklch(0.22 0.09 240);
+
+    /* Braip-style Purple & White Palette */
+    /* Primary: Deep Purple #6200EA */
+    --color-primary-50: #ede7f6;
+    --color-primary-100: #d1c4e9;
+    --color-primary-200: #b39ddb;
+    --color-primary-300: #9575cd;
+    --color-primary-400: #7e57c2;
+    --color-primary-500: #673ab7;
+    --color-primary-600: #5e35b1;
+    --color-primary-700: #512da8;
+    --color-primary-800: #4527a0;
+    --color-primary-900: #311b92;
+    --color-primary-950: #1a0f52;
+    /* Deepest purple for dark backgrounds */
 }
 
 /* Alpine.js cloaking */
@@ -32,12 +37,12 @@
     .scrollbar-thin {
         scrollbar-width: thin;
     }
-    
+
     .scrollbar-hide {
         -ms-overflow-style: none;
         scrollbar-width: none;
     }
-    
+
     .scrollbar-hide::-webkit-scrollbar {
         display: none;
     }
@@ -48,19 +53,19 @@
     .btn {
         @apply inline-flex items-center justify-center px-4 py-2 font-medium rounded-lg transition focus:outline-none focus:ring-2 focus:ring-offset-2;
     }
-    
+
     .btn-primary {
         @apply bg-blue-600 hover:bg-blue-700 text-white focus:ring-blue-500;
     }
-    
+
     .btn-secondary {
         @apply bg-gray-200 hover:bg-gray-300 text-gray-900 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white focus:ring-gray-500;
     }
-    
+
     .form-input {
         @apply w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500;
     }
-    
+
     .form-label {
         @apply block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2;
     }
