@@ -27,11 +27,18 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => [ //impede o uso de emojis e define o limite para 35 caracteres
+                'required',
+                'string',
+                'max:35',
+                'regex:/^[\p{L}0-9\s\-\/\&.,]+$/u',
+            ],
             'type' => 'required|in:income,expense',
             'color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
         ], [
             'name.required' => 'O nome da categoria é obrigatório.',
+            'name.regex' => 'O nome da categoria não pode conter emojis.',
+            'name.max' => 'O nome da categoria deve ter no máximo 35 caracteres.',
             'type.required' => 'O tipo da categoria é obrigatório.',
             'type.in' => 'O tipo deve ser Receita ou Despesa.',
             'color.regex' => 'A cor deve estar no formato hexadecimal (#RRGGBB).',
