@@ -34,15 +34,19 @@
 
             <main class="flex-1 p-6 lg:p-8">
                 @if(session('success'))
-                    <div class="mb-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 text-green-800 dark:text-green-200 px-4 py-3 rounded-lg">
-                        {{ session('success') }}
-                    </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            showSuccess('{{ session('success') }}');
+                        });
+                    </script>
                 @endif
 
                 @if(session('error'))
-                    <div class="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 px-4 py-3 rounded-lg">
-                        {{ session('error') }}
-                    </div>
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            showError('{{ session('error') }}');
+                        });
+                    </script>
                 @endif
 
                 @yield('content')
@@ -51,6 +55,29 @@
 
         @include('components.footer')
     </div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // Configuração global
+    window.Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer);
+            toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
+    });
+    // Helpers
+    window.showSuccess = (message, title = 'Sucesso!') => {
+        Toast.fire({ icon: 'success', title: title, text: message });
+    };
+    window.showError = (message, title = 'Erro!') => {
+        Toast.fire({ icon: 'error', title: title, text: message });
+    };
+</script>
 
     @stack('scripts')
 </body>
