@@ -1,41 +1,37 @@
 #!/bin/bash
 
-# Script de inicialização para produção no Railway
-# Este script roda automaticamente antes do container iniciar
-
 set -e
 
-echo "🚀 Iniciando CamUp em produção..."
+echo "==> Iniciando CamUp em producao..."
 
-# 1. Verificar se APP_KEY existe
-if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "base64:" ]; then
-    echo "⚠️  APP_KEY não configurada. Gerando..."
+# Aguardar banco estar pronto
+echo "==> Aguardando banco de dados..."
+sleep 5
+
+# Gerar APP_KEY se necessário
+if [ -z "$APP_KEY" ]; then
+    echo "==> Gerando APP_KEY..."
     php artisan key:generate --force
 fi
 
-# 2. Rodar migrations automaticamente
-echo "📊 Rodando migrations..."
-php artisan migrate --force --no-interaction
+# Rodar migrations
+echo "==> Executando migrations..."
+php artisan migrate --force --no-interaction || echo "Migrations falharam, continuando..."
 
-# 3. Limpar e cachear configurações
-echo "⚡ Otimizando aplicação..."
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
+# Otimizações
+echo "==> Otimizando aplicacao..."
+php artisan config:cache || true
+php artisan route:cache || true
+php artisan view:cache || true
+php artisan storage:link || true
 
-# 4. Criar link simbólico para storage (se necessário)
-if [ ! -L "/var/www/public/storage" ]; then
-    echo "🔗 Criando link do storage..."
-    php artisan storage:link
-fi
+# Permissões
+echo "==> Ajustando permissoes..."
+chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache 2>/dev/null || true
+chmod -R 775 /var/www/storage /var/www/bootstrap/cache 2>/dev/null || true
 
-# 5. Ajustar permissões finais
-echo "🔐 Ajustando permissões..."
-chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+echo "==> Aplicacao pronta!"
+echo "==> Iniciando Nginx e PHP-FPM..."
 
-echo "✅ Inicialização completa!"
-echo "🌐 Aplicação pronta para receber requisições"
-
-# Iniciar Supervisor
-exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
+# Iniciar supervisor em foreground (IMPORTANTE: -n flag)
+exec /usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf
