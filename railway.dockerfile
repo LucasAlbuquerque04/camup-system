@@ -51,14 +51,39 @@ COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 # Expor porta 8080 (padrão do Railway)
 EXPOSE 8080
 
-# Otimizações do Laravel para produção
-RUN php artisan config:cache || true \
-  && php artisan route:cache || true \
-  && php artisan view:cache || true
+# Criar script de inicialização inline
+RUN echo '#!/bin/bash\n\
+  set -e\n\
+  echo "🚀 Iniciando CamUp..."\n\
+  \n\
+  # Gerar APP_KEY se não existir\n\
+  if [ -z "$APP_KEY" ] || [ "$APP_KEY" = "base64:" ]; then\n\
+  echo "⚠️  Gerando APP_KEY..."\n\
+  php artisan key:generate --force\n\
+  fi\n\
+  \n\
+  # Rodar migrations\n\
+  echo "📊 Rodando migrations..."\n\
+  php artisan migrate --force --no-interaction || true\n\
+  \n\
+  # Otimizar aplicação\n\
+  echo "⚡ Otimizando..."\n\
+  php artisan config:cache\n\
+  php artisan route:cache\n\
+  php artisan view:cache\n\
+  \n\
+  # Link do storage\n\
+  php artisan storage:link || true\n\
+  \n\
+  # Permissões\n\
+  chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache\n\
+  chmod -R 775 /var/www/storage /var/www/bootstrap/cache\n\
+  \n\
+  echo "✅ Inicialização completa!"\n\
+  \n\
+  # Iniciar Supervisor\n\
+  exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf\n\
+  ' > /usr/local/bin/start.sh && chmod +x /usr/local/bin/start.sh
 
-# Copiar script de inicialização
-COPY docker/scripts/railway-start.sh /usr/local/bin/railway-start.sh
-RUN chmod +x /usr/local/bin/railway-start.sh
-
-# Iniciar aplicação usando script de inicialização
-CMD ["/usr/local/bin/railway-start.sh"]
+# Iniciar aplicação
+CMD ["/usr/local/bin/start.sh"]
