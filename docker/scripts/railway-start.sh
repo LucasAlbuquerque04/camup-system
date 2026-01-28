@@ -4,6 +4,13 @@ set -e
 
 echo "==> Iniciando CamUp em producao..."
 
+# Debug: mostrar variáveis disponíveis
+echo "==> Debug: Verificando variaveis de ambiente..."
+echo "APP_NAME: $APP_NAME"
+echo "APP_ENV: $APP_ENV"
+echo "DB_CONNECTION: $DB_CONNECTION"
+echo "APP_KEY presente: $([ -z "$APP_KEY" ] && echo 'NAO' || echo 'SIM')"
+
 # Aguardar banco estar pronto
 echo "==> Aguardando banco de dados..."
 sleep 5
@@ -11,10 +18,13 @@ sleep 5
 # Verificar se APP_KEY está configurada
 if [ -z "$APP_KEY" ]; then
     echo "ERRO: APP_KEY nao configurada nas variaveis de ambiente!"
-    echo "Configure APP_KEY no Railway antes de continuar."
-    exit 1
+    echo "Por favor, adicione APP_KEY nas variaveis do Railway."
+    echo "Valor sugerido: base64:giLgDlAD0HuRvfWJQa7GxOoKDfuQQOvfFx8Kw1b5jK8="
+    # Não sair, apenas avisar e continuar (temporário para debug)
+    echo "AVISO: Continuando sem APP_KEY para debug..."
+else
+    echo "==> APP_KEY configurada!"
 fi
-echo "==> APP_KEY configurada!"
 
 
 # Rodar migrations
