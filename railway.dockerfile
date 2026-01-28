@@ -1,4 +1,5 @@
 # Dockerfile otimizado para produção no Railway
+# Build: 2026-01-27 v2
 FROM php:8.2-fpm
 
 # Instalar dependências do sistema
