@@ -26,6 +26,10 @@ echo "MYSQLHOST: $MYSQLHOST"
 echo "MYSQLPORT: $MYSQLPORT"
 echo "MYSQLDATABASE: $MYSQLDATABASE"
 echo "MYSQLUSER: $MYSQLUSER"
+echo ""
+echo "==> TODAS as variaveis MySQL disponiveis:"
+env | grep -i mysql | head -20 || echo "Nenhuma variavel MySQL encontrada"
+echo ""
 
 # Usar variáveis MySQL do Railway como fallback
 export DB_HOST="${DB_HOST:-$MYSQLHOST}"
