@@ -2,10 +2,15 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "DOCKERFILE",
-    "dockerfilePath": "railway.dockerfile"
+    "dockerfilePath": "railway.dockerfile",
+    "watchPatterns": [
+      "src/**",
+      "docker/**",
+      "railway.dockerfile"
+    ]
   },
   "deploy": {
-    "startCommand": "/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf",
+    "startCommand": "/bin/bash /usr/local/bin/start.sh",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
