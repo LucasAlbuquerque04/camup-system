@@ -80,6 +80,16 @@ sleep 5
 echo "==> Executando migrations..."
 php artisan migrate --force --no-interaction || echo "Migrations falharam, continuando..."
 
+# Configurar porta do Nginx dinamicamente
+PORT="${PORT:-8080}"
+echo "==> Configurando Nginx na porta $PORT..."
+sed -i "s/listen 8080;/listen $PORT;/" /etc/nginx/sites-available/default
+sed -i "s/listen \[::\]:8080;/listen [::]:$PORT;/" /etc/nginx/sites-available/default
+
+# Verificar configurações finais
+echo "==> Verificando configuração do Nginx:"
+grep "listen" /etc/nginx/sites-available/default
+
 # IMPORTANTE: Limpar cache ANTES de otimizar (pode estar corrompido)
 echo "==> Limpando cache corrompido..."
 rm -rf /var/www/bootstrap/cache/*.php || true
