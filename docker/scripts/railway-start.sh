@@ -42,6 +42,17 @@ echo "DB_USERNAME: $DB_USERNAME"
 echo "APP_KEY: ${APP_KEY:0:20}..."
 echo ""
 
+# Se APP_URL estiver vazio, usar o domínio público do Railway
+if [ -z "$APP_URL" ]; then
+    if [ -n "$RAILWAY_PUBLIC_DOMAIN" ]; then
+        export APP_URL="https://$RAILWAY_PUBLIC_DOMAIN"
+        echo "==> APP_URL configurado automaticamente: $APP_URL"
+    else
+        export APP_URL="http://localhost:8080"
+        echo "AVISO: APP_URL nao configurado, usando localhost"
+    fi
+fi
+
 # Criar .env mínimo para Laravel (ele precisa do arquivo)
 echo "==> Criando arquivo .env..."
 cat > /var/www/.env << EOF
