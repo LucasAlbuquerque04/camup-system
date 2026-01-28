@@ -8,11 +8,14 @@ echo "==> Iniciando CamUp em producao..."
 echo "==> Aguardando banco de dados..."
 sleep 5
 
-# Gerar APP_KEY se necessário
+# Verificar se APP_KEY está configurada
 if [ -z "$APP_KEY" ]; then
-    echo "==> Gerando APP_KEY..."
-    php artisan key:generate --force
+    echo "ERRO: APP_KEY nao configurada nas variaveis de ambiente!"
+    echo "Configure APP_KEY no Railway antes de continuar."
+    exit 1
 fi
+echo "==> APP_KEY configurada!"
+
 
 # Rodar migrations
 echo "==> Executando migrations..."
