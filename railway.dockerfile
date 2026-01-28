@@ -56,5 +56,4 @@ EXPOSE 8080
 COPY docker/scripts/railway-start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 
-# Iniciar aplicação
-CMD ["/bin/bash", "/usr/local/bin/start.sh"]
+# Nota: O comando de start é controlado pelo railway.json
