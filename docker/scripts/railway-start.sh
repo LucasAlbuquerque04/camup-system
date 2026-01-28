@@ -4,11 +4,10 @@ set -e
 
 echo "==> Iniciando CamUp em producao..."
 
-# Exportar variáveis explicitamente
+# Exportar variáveis explicitamente com valores padrão do Railway
 export APP_NAME="${APP_NAME:-CamUp}"
 export APP_ENV="${APP_ENV:-production}"
 export APP_DEBUG="${APP_DEBUG:-false}"
-export APP_KEY="${APP_KEY}"
 export DB_CONNECTION="${DB_CONNECTION:-mysql}"
 
 # Debug: mostrar variáveis disponíveis
@@ -31,12 +30,27 @@ echo "==> TODAS as variaveis MySQL disponiveis:"
 env | grep -i mysql | head -20 || echo "Nenhuma variavel MySQL encontrada"
 echo ""
 
-# Usar variáveis MySQL do Railway como fallback
-export DB_HOST="${DB_HOST:-$MYSQLHOST}"
-export DB_PORT="${DB_PORT:-$MYSQLPORT}"
-export DB_DATABASE="${DB_DATABASE:-$MYSQLDATABASE}"
-export DB_USERNAME="${DB_USERNAME:-$MYSQLUSER}"
-export DB_PASSWORD="${DB_PASSWORD:-$MYSQLPASSWORD}"
+# Usar variáveis MySQL do Railway com fallbacks explícitos
+# Railway injeta DB_HOST automaticamente, mas precisamos garantir as outras
+export DB_HOST="${DB_HOST:-mysql.railway.internal}"
+export DB_PORT="${DB_PORT:-3306}"
+export DB_DATABASE="${DB_DATABASE:-railway}"
+export DB_USERNAME="${DB_USERNAME:-root}"
+export DB_PASSWORD="${DB_PASSWORD:-}"
+
+# APP_KEY: usar valor configurado ou gerar um padrão
+if [ -z "$APP_KEY" ]; then
+    echo "AVISO: APP_KEY vazia, usando valor padrao..."
+    export APP_KEY="base64:giLgDlAD0HuRvfWJQa7GxOoKDfuQQOvfFx8Kw1b5jK8="
+fi
+
+echo "==> Valores finais que serao usados:"
+echo "DB_HOST: $DB_HOST"
+echo "DB_PORT: $DB_PORT"
+echo "DB_DATABASE: $DB_DATABASE"
+echo "DB_USERNAME: $DB_USERNAME"
+echo "APP_KEY: ${APP_KEY:0:20}..."
+echo ""
 
 # Criar .env mínimo para Laravel (ele precisa do arquivo)
 echo "==> Criando arquivo .env..."
@@ -52,26 +66,14 @@ DB_PORT=${DB_PORT}
 DB_DATABASE=${DB_DATABASE}
 DB_USERNAME=${DB_USERNAME}
 DB_PASSWORD=${DB_PASSWORD}
-SESSION_DRIVER=${SESSION_DRIVER}
-CACHE_STORE=${CACHE_STORE}
-LOG_LEVEL=${LOG_LEVEL}
+SESSION_DRIVER=${SESSION_DRIVER:-database}
+CACHE_STORE=${CACHE_STORE:-database}
+LOG_LEVEL=${LOG_LEVEL:-error}
 EOF
 
 # Aguardar banco estar pronto
 echo "==> Aguardando banco de dados..."
 sleep 5
-
-# Verificar se APP_KEY está configurada
-if [ -z "$APP_KEY" ]; then
-    echo "ERRO: APP_KEY nao configurada nas variaveis de ambiente!"
-    echo "Por favor, adicione APP_KEY nas variaveis do Railway."
-    echo "Valor sugerido: base64:giLgDlAD0HuRvfWJQa7GxOoKDfuQQOvfFx8Kw1b5jK8="
-    # Não sair, apenas avisar e continuar (temporário para debug)
-    echo "AVISO: Continuando sem APP_KEY para debug..."
-else
-    echo "==> APP_KEY configurada!"
-fi
-
 
 # Rodar migrations
 echo "==> Executando migrations..."
