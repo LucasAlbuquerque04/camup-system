@@ -4,12 +4,38 @@ set -e
 
 echo "==> Iniciando CamUp em producao..."
 
+# Exportar variáveis explicitamente
+export APP_NAME="${APP_NAME:-CamUp}"
+export APP_ENV="${APP_ENV:-production}"
+export APP_DEBUG="${APP_DEBUG:-false}"
+export APP_KEY="${APP_KEY}"
+export DB_CONNECTION="${DB_CONNECTION:-mysql}"
+
 # Debug: mostrar variáveis disponíveis
 echo "==> Debug: Verificando variaveis de ambiente..."
 echo "APP_NAME: $APP_NAME"
 echo "APP_ENV: $APP_ENV"
 echo "DB_CONNECTION: $DB_CONNECTION"
 echo "APP_KEY presente: $([ -z "$APP_KEY" ] && echo 'NAO' || echo 'SIM')"
+
+# Criar .env mínimo para Laravel (ele precisa do arquivo)
+echo "==> Criando arquivo .env..."
+cat > /var/www/.env << EOF
+APP_NAME=${APP_NAME}
+APP_ENV=${APP_ENV}
+APP_KEY=${APP_KEY}
+APP_DEBUG=${APP_DEBUG}
+APP_URL=${APP_URL}
+DB_CONNECTION=${DB_CONNECTION}
+DB_HOST=${DB_HOST}
+DB_PORT=${DB_PORT}
+DB_DATABASE=${DB_DATABASE}
+DB_USERNAME=${DB_USERNAME}
+DB_PASSWORD=${DB_PASSWORD}
+SESSION_DRIVER=${SESSION_DRIVER}
+CACHE_STORE=${CACHE_STORE}
+LOG_LEVEL=${LOG_LEVEL}
+EOF
 
 # Aguardar banco estar pronto
 echo "==> Aguardando banco de dados..."
