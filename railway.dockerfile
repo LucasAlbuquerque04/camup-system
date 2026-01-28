@@ -46,6 +46,9 @@ RUN chown -R www-data:www-data /var/www \
 # Copiar configuração do Nginx
 COPY docker/nginx/railway.conf /etc/nginx/sites-available/default
 
+# Copiar configuração do PHP-FPM
+COPY docker/php-fpm/www.conf /usr/local/etc/php-fpm.d/www.conf
+
 # Copiar configuração do Supervisor
 COPY docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
