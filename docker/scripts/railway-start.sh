@@ -20,18 +20,8 @@ echo "DB_HOST: $DB_HOST"
 echo "DB_PORT: $DB_PORT"
 echo "DB_DATABASE: $DB_DATABASE"
 echo ""
-echo "==> Variaveis MySQL do Railway:"
-echo "MYSQLHOST: $MYSQLHOST"
-echo "MYSQLPORT: $MYSQLPORT"
-echo "MYSQLDATABASE: $MYSQLDATABASE"
-echo "MYSQLUSER: $MYSQLUSER"
-echo ""
-echo "==> TODAS as variaveis MySQL disponiveis:"
-env | grep -i mysql | head -20 || echo "Nenhuma variavel MySQL encontrada"
-echo ""
 
 # Usar variáveis MySQL do Railway com fallbacks explícitos
-# Railway injeta DB_HOST automaticamente, mas precisamos garantir as outras
 export DB_HOST="${DB_HOST:-mysql.railway.internal}"
 export DB_PORT="${DB_PORT:-3306}"
 export DB_DATABASE="${DB_DATABASE:-railway}"
@@ -79,7 +69,15 @@ sleep 5
 echo "==> Executando migrations..."
 php artisan migrate --force --no-interaction || echo "Migrations falharam, continuando..."
 
-# Otimizações
+# IMPORTANTE: Limpar cache ANTES de otimizar (pode estar corrompido)
+echo "==> Limpando cache corrompido..."
+rm -rf /var/www/bootstrap/cache/*.php || true
+php artisan config:clear || true
+php artisan route:clear || true
+php artisan view:clear || true
+php artisan cache:clear || true
+
+# Otimizações (agora com cache limpo)
 echo "==> Otimizando aplicacao..."
 php artisan config:cache || true
 php artisan route:cache || true
