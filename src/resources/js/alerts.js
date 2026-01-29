@@ -1,8 +1,6 @@
 import Swal from 'sweetalert2';
 
-// Configuração global do SweetAlert2
 window.Swal = Swal;
-// Toast padrão (notificações pequenas)
 window.Toast = Swal.mixin({
     toast: true,
     position: 'top-end',
@@ -14,7 +12,7 @@ window.Toast = Swal.mixin({
         toast.addEventListener('mouseleave', Swal.resumeTimer);
     }
 });
-// Função helper para alertas de sucesso
+
 window.showSuccess = (message, title = 'Sucesso!') => {
     Toast.fire({
         icon: 'success',
@@ -22,7 +20,7 @@ window.showSuccess = (message, title = 'Sucesso!') => {
         text: message
     });
 };
-// Função helper para alertas de erro
+
 window.showError = (message, title = 'Erro!') => {
     Toast.fire({
         icon: 'error',
@@ -30,7 +28,7 @@ window.showError = (message, title = 'Erro!') => {
         text: message
     });
 };
-// Função helper para confirmação
+
 window.confirmDelete = (callback) => {
     Swal.fire({
         title: 'Tem certeza?',
