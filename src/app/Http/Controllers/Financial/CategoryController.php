@@ -46,7 +46,7 @@ class CategoryController extends Controller
             ->where('user_id', auth()->id())
             ->firstOrFail();
 
-        $validated = $this->validateCategory($request);
+        $validated = $this->validateCategory($request, $id);
 
         $category->update($validated);
 
@@ -66,7 +66,7 @@ class CategoryController extends Controller
             ->with('success', 'Categoria excluída com sucesso!');
     }
 
-    private function validateCategory(Request $request): array
+    private function validateCategory(Request $request, ?string $categoryId = null): array
     {
         $validated = $request->validate([
             'name' => [
@@ -74,6 +74,9 @@ class CategoryController extends Controller
                 'string',
                 'max:35',
                 'regex:/^[\p{L}0-9\s\-\/\&.,]+$/u',
+                \Illuminate\Validation\Rule::unique('categories', 'name')
+                    ->where('user_id', auth()->id())
+                    ->ignore($categoryId),
             ],
             'type' => 'required|in:income,expense',
             'color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
@@ -81,6 +84,7 @@ class CategoryController extends Controller
             'name.required' => 'O nome da categoria é obrigatório.',
             'name.regex' => 'O nome da categoria não pode conter emojis ou caracteres especiais.',
             'name.max' => 'O nome da categoria deve ter no máximo 35 caracteres.',
+            'name.unique' => 'Você já possui uma categoria com este nome.',
             'type.required' => 'O tipo da categoria é obrigatório.',
             'type.in' => 'O tipo deve ser Receita ou Despesa.',
             'color.regex' => 'A cor deve estar no formato hexadecimal (#RRGGBB).',
