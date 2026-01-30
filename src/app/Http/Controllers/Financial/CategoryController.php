@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Financial;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
@@ -68,13 +69,17 @@ class CategoryController extends Controller
 
     private function validateCategory(Request $request, ?string $categoryId = null): array
     {
+        $request->merge([
+            'name' => trim($request->input('name'))
+        ]);
+
         $validated = $request->validate([
             'name' => [
                 'required',
                 'string',
                 'max:35',
                 'regex:/^[\p{L}0-9\s\-\/\&.,]+$/u',
-                \Illuminate\Validation\Rule::unique('categories', 'name')
+                Rule::unique('categories', 'name')
                     ->where('user_id', auth()->id())
                     ->ignore($categoryId),
             ],
@@ -84,7 +89,7 @@ class CategoryController extends Controller
             'name.required' => 'O nome da categoria é obrigatório.',
             'name.regex' => 'O nome da categoria não pode conter emojis ou caracteres especiais.',
             'name.max' => 'O nome da categoria deve ter no máximo 35 caracteres.',
-            'name.unique' => 'Você já possui uma categoria com este nome.',
+            'name.unique' => 'Já existe uma categoria com este nome.',
             'type.required' => 'O tipo da categoria é obrigatório.',
             'type.in' => 'O tipo deve ser Receita ou Despesa.',
             'color.regex' => 'A cor deve estar no formato hexadecimal (#RRGGBB).',

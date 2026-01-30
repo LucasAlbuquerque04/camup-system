@@ -157,28 +157,18 @@
         });
     }
     // SweetAlert2 para confirmação de exclusão
-        document.querySelectorAll('.delete-form').forEach(form => {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const categoryName = this.dataset.categoryName;
-                
-                Swal.fire({
-                    title: 'Tem certeza?',
-                    html: `Deseja excluir a categoria <strong>${categoryName}</strong>?<br>Esta ação não poderá ser revertida!`,
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#EF4444',
-                    cancelButtonColor: '#6B7280',
-                    confirmButtonText: 'Sim, excluir!',
-                    cancelButtonText: 'Cancelar',
-                    reverseButtons: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        this.submit();
-                    }
-                });
-            });
+    document.querySelectorAll('.delete-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const categoryName = this.dataset.categoryName;
+            
+            window.confirmDelete(
+                () => this.submit(),
+                'Tem certeza?',
+                `Deseja excluir a categoria <strong>${categoryName}</strong>?<br>Esta ação não poderá ser revertida!`
+            );
         });
+    });
     </script>
 @endpush
 @endsection

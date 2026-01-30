@@ -58,25 +58,80 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // Configuração global
-    window.Toast = Swal.mixin({
+    // Helper para detectar tema
+    const isDarkMode = () => document.documentElement.classList.contains('dark');
+
+    // Cores do tema
+    const getThemeColors = () => ({
+        background: isDarkMode() ? '#1F2937' : '#FFFFFF',
+        color: isDarkMode() ? '#F3F4F6' : '#111827'
+    });
+
+    // Configuração base do Toast
+    const getToastMixin = () => Swal.mixin({
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
         timer: 3000,
         timerProgressBar: true,
+        ...getThemeColors(),
         didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer);
             toast.addEventListener('mouseleave', Swal.resumeTimer);
         }
     });
-    // Helpers
+
+    // Inicializa o Toast globalmente
+    window.Toast = getToastMixin();
+
     window.showSuccess = (message, title = 'Sucesso!') => {
-        Toast.fire({ icon: 'success', title: title, text: message });
+        getToastMixin().fire({
+            icon: 'success',
+            title: title,
+            text: message
+        });
     };
+
     window.showError = (message, title = 'Erro!') => {
-        Toast.fire({ icon: 'error', title: title, text: message });
+        getToastMixin().fire({
+            icon: 'error',
+            title: title,
+            text: message
+        });
     };
+
+    window.confirmDelete = (callback, title = 'Tem certeza?', text = 'Esta ação não poderá ser revertida!', confirmText = 'Sim, excluir!') => {
+        Swal.fire({
+            title: title,
+            html: text,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#EF4444',
+            cancelButtonColor: '#6B7280',
+            confirmButtonText: confirmText,
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true,
+            ...getThemeColors()
+        }).then((result) => {
+            if (result.isConfirmed) {
+                callback();
+            }
+        });
+    };
+
+    // Observador para mudança de tema em tempo real
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (mutation.attributeName === 'class') {
+                window.Toast = getToastMixin();
+            }
+        });
+    });
+
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
 </script>
 
     @stack('scripts')
