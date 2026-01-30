@@ -52,6 +52,8 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        event(new \Illuminate\Auth\Events\Registered($user));
+
         Auth::login($user);
 
         return redirect(route('dashboard'));
