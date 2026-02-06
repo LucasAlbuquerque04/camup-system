@@ -52,9 +52,13 @@ class AuthController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
+        // Trigger email verification notification
+        event(new \Illuminate\Auth\Events\Registered($user));
+
         Auth::login($user);
 
-        return redirect(route('dashboard'));
+        // Redirect to verification notice instead of dashboard
+        return redirect()->route('verification.notice');
     }
 
     public function logout(Request $request)

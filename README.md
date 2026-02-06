@@ -258,9 +258,47 @@ git push origin feat/nome-da-feature
 * Code Review
 * Merge na `stage` e depois na `main`
 
+
+---
+
+## 🌐 Deploy em Produção
+
+O CamUp pode ser facilmente deployado no **Railway.app** de forma gratuita!
+
+### 🚀 Deploy rápido
+
+1. Crie uma conta em [railway.app](https://railway.app)
+2. Conecte seu repositório GitHub
+3. Adicione um banco MySQL
+4. Configure as variáveis de ambiente
+5. Deploy automático! 🎉
+
+### 📖 Guia completo
+
+Para instruções detalhadas passo a passo, consulte:
+
+```bash
+.agent/workflows/deploy.md
+```
+
+Ou use o comando:
+
+```bash
+# Ver o guia de deploy
+cat .agent/workflows/deploy.md
+```
+
+**Vantagens do Railway:**
+* ✅ $5 de crédito grátis/mês
+* ✅ Deploy automático a cada push
+* ✅ MySQL incluído
+* ✅ SSL gratuito
+* ✅ Logs em tempo real
+
 ---
 
 ## 📚 Observações importantes
+
 
 * Nunca versionar o arquivo `.env`
 * Sempre usar Docker
