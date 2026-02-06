@@ -5,13 +5,14 @@ namespace App\Http\Controllers\Financial;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::where('user_id', auth()->id())
+        $categories = Category::where('user_id', Auth::id())
             ->orderBy('type')
             ->orderBy('name')
             ->get();
@@ -24,7 +25,7 @@ class CategoryController extends Controller
         $validated = $this->validateCategory($request);
 
         Category::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             ...$validated,
         ]);
 
@@ -35,7 +36,7 @@ class CategoryController extends Controller
     public function edit(string $id)
     {
         $category = Category::where('id', $id)
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->firstOrFail();
 
         return view('financial.categories.edit', compact('category'));
@@ -44,7 +45,7 @@ class CategoryController extends Controller
     public function update(Request $request, string $id)
     {
         $category = Category::where('id', $id)
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->firstOrFail();
 
         $validated = $this->validateCategory($request, $id);
@@ -58,7 +59,7 @@ class CategoryController extends Controller
     public function destroy(string $id)
     {
         $category = Category::where('id', $id)
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->firstOrFail();
 
         $category->delete();
@@ -79,9 +80,7 @@ class CategoryController extends Controller
                 'string',
                 'max:35',
                 'regex:/^[\p{L}0-9\s\-\/\&.,]+$/u',
-                Rule::unique('categories', 'name')
-                    ->where('user_id', auth()->id())
-                    ->ignore($categoryId),
+                Rule::unique('categories', 'name')->where('user_id', Auth::id())->ignore($categoryId),
             ],
             'type' => 'required|in:income,expense',
             'color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',
