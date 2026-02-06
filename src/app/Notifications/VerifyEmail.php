@@ -6,8 +6,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
-class VerifyEmail extends Notification
+class VerifyEmail extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -36,12 +37,23 @@ class VerifyEmail extends Notification
     {
         $verificationUrl = $this->verificationUrl($notifiable);
 
+        // Log email sending attempt
+        Log::info('Sending email verification notification', [
+            'user_id' => $notifiable->id,
+            'email' => $notifiable->email,
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
         return (new MailMessage)
-            ->subject('Confirme seu endereço de email')
+            ->subject('Confirme seu endereço de email - CamUp')
             ->greeting('Olá, ' . $notifiable->name . '!')
-            ->line('Por favor, clique no botão abaixo para verificar seu endereço de email e proteger sua conta.')
-            ->action('Verificar Email', $verificationUrl)
-            ->line('Se você não criou uma conta, nenhuma ação é necessária.');
+            ->line('Obrigado por se cadastrar no CamUp! Para começar a usar sua conta, precisamos verificar seu endereço de email.')
+            ->line('**Email:** ' . $notifiable->email)
+            ->line('Clique no botão abaixo para confirmar seu endereço de email e ativar sua conta:')
+            ->action('Verificar Meu Email', $verificationUrl)
+            ->line('Este link é válido por **24 horas** e só pode ser usado uma vez.')
+            ->line('**Importante:** Se você não criou uma conta no CamUp, ignore este email. Nenhuma ação adicional é necessária.')
+            ->salutation('Atenciosamente, Equipe CamUp');
     }
 
     /**

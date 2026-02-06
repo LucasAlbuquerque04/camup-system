@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Log;
+use Illuminate\Auth\Events\Verified;
 
 class VerificationController extends Controller
 {
@@ -25,14 +25,40 @@ class VerificationController extends Controller
      */
     public function verify(EmailVerificationRequest $request)
     {
-        $request->fulfill();
+        // Check if already verified
+        if ($request->user()->hasVerifiedEmail()) {
+            return redirect()->route('dashboard')->with('info', 'Seu email já foi verificado anteriormente.');
+        }
 
-        Log::info('Email verified for user: ' . $request->user()->id, [
+        // Mark email as verified
+        if ($request->user()->markEmailAsVerified()) {
+            event(new Verified($request->user()));
+        }
+
+        // Log verification for security audit
+        Log::info('Email verified successfully', [
+            'user_id' => $request->user()->id,
+            'email' => $request->user()->email,
             'ip' => $request->ip(),
-            'email' => $request->user()->email
+            'user_agent' => $request->userAgent(),
+            'timestamp' => now()->toDateTimeString()
         ]);
 
-        return redirect()->route('dashboard')->with('verified', true);
+        return view('auth.verification-success');
+    }
+
+    /**
+     * Handle verification errors (expired or invalid tokens).
+     */
+    public function error(Request $request)
+    {
+        Log::warning('Email verification failed - invalid or expired token', [
+            'user_id' => $request->user()?->id,
+            'ip' => $request->ip(),
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
+        return view('auth.verification-error');
     }
 
     /**
@@ -40,16 +66,31 @@ class VerificationController extends Controller
      */
     public function resend(Request $request)
     {
+        // Check if already verified
         if ($request->user()->hasVerifiedEmail()) {
             return redirect()->intended(route('dashboard'));
         }
 
-        $request->user()->sendEmailVerificationNotification();
+        // Send new verification email
+        try {
+            $request->user()->sendEmailVerificationNotification();
 
-        Log::info('Verification email resent for user: ' . $request->user()->id, [
-            'ip' => $request->ip()
-        ]);
+            Log::info('Verification email resent successfully', [
+                'user_id' => $request->user()->id,
+                'email' => $request->user()->email,
+                'ip' => $request->ip(),
+                'timestamp' => now()->toDateTimeString()
+            ]);
 
-        return back()->with('status', 'verification-link-sent');
+            return back()->with('status', 'verification-link-sent');
+        } catch (\Exception $e) {
+            Log::error('Failed to resend verification email', [
+                'user_id' => $request->user()->id,
+                'error' => $e->getMessage(),
+                'ip' => $request->ip()
+            ]);
+
+            return back()->with('error', 'Erro ao enviar email. Por favor, tente novamente.');
+        }
     }
 }

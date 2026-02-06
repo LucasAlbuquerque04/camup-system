@@ -8,7 +8,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Authentication Routes
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'loginView'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
@@ -18,7 +18,7 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
-// Email Verification Routes
+
 Route::middleware('auth')->group(function () {
     Route::get('/email/verify', [\App\Http\Controllers\Auth\VerificationController::class, 'notice'])
         ->name('verification.notice');
@@ -30,13 +30,15 @@ Route::middleware('auth')->group(function () {
     Route::post('/email/verification-notification', [\App\Http\Controllers\Auth\VerificationController::class, 'resend'])
         ->middleware(['throttle:1,1'])
         ->name('verification.resend');
+    
+    Route::get('/email/verify-error', [\App\Http\Controllers\Auth\VerificationController::class, 'error'])
+        ->name('verification.error');
 });
 
-// Protected Routes
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     
-    // Financial Routes (Placeholders for now)
     Route::resource('transactions', \App\Http\Controllers\Financial\TransactionController::class);
     Route::resource('categories', \App\Http\Controllers\Financial\CategoryController::class);
     Route::get('/import', [\App\Http\Controllers\Financial\BankImportController::class, 'index'])->name('import.index');
