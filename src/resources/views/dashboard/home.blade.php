@@ -7,6 +7,21 @@
 @endsection
 
 @section('content')
+    {{-- Email Verification Success Banner --}}
+    @if (session('verified'))
+        <div class="mb-6 p-4 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded-lg shadow-sm">
+            <div class="flex items-center">
+                <svg class="h-6 w-6 text-green-600 dark:text-green-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <div>
+                    <h3 class="text-sm font-semibold text-green-800 dark:text-green-300">Email Verificado com Sucesso!</h3>
+                    <p class="text-sm text-green-700 dark:text-green-400">Sua conta está ativa e você tem acesso completo ao CamUp.</p>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <div class="mb-8">
         <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Visão Geral</h1>
         <p class="mt-2 text-gray-600 dark:text-gray-400">Acompanhe suas finanças e metas.</p>
