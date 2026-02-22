@@ -16,7 +16,7 @@
     </h2>
 
     <p class="text-base text-gray-600 dark:text-gray-400 mb-2">
-        O link de verificação que você clicou é inválido ou já expirou.
+        {{ $verificationErrorMessage ?? 'Link expirado ou inválido. Solicite um novo email de verificação.' }}
     </p>
 
     <p class="text-sm text-gray-500 dark:text-gray-500 mb-8">

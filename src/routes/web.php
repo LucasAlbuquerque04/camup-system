@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -18,6 +19,8 @@ Route::middleware('guest')->group(function () {
 
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
+Route::get('/email/verify-error', [\App\Http\Controllers\Auth\VerificationController::class, 'error'])
+    ->name('verification.error');
 
 Route::middleware('auth')->group(function () {
     Route::get('/email/verify', [\App\Http\Controllers\Auth\VerificationController::class, 'notice'])
@@ -31,8 +34,7 @@ Route::middleware('auth')->group(function () {
         ->middleware(['throttle:1,1'])
         ->name('verification.resend');
     
-    Route::get('/email/verify-error', [\App\Http\Controllers\Auth\VerificationController::class, 'error'])
-        ->name('verification.error');
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
 });
 
 

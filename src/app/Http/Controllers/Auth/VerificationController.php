@@ -27,7 +27,9 @@ class VerificationController extends Controller
     {
         // Check if already verified
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->route('dashboard')->with('info', 'Seu email já foi verificado anteriormente.');
+            return redirect()
+                ->route('dashboard')
+                ->with('success', 'Email verificado com sucesso!');
         }
 
         // Mark email as verified
@@ -44,7 +46,10 @@ class VerificationController extends Controller
             'timestamp' => now()->toDateTimeString()
         ]);
 
-        return view('auth.verification-success');
+        return redirect()
+            ->route('dashboard')
+            ->with('verified', true)
+            ->with('success', 'Email verificado com sucesso!');
     }
 
     /**
@@ -58,7 +63,10 @@ class VerificationController extends Controller
             'timestamp' => now()->toDateTimeString()
         ]);
 
-        return view('auth.verification-error');
+        return view('auth.verification-error', [
+            'verificationErrorMessage' => session('verification_error_message')
+                ?? 'Link expirado ou inválido. Solicite um novo email de verificação.',
+        ]);
     }
 
     /**

@@ -3,12 +3,11 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
 
-class VerifyEmail extends Notification implements ShouldQueue
+class VerifyEmail extends Notification
 {
     use Queueable;
 
@@ -36,6 +35,7 @@ class VerifyEmail extends Notification implements ShouldQueue
     public function toMail(object $notifiable): MailMessage
     {
         $verificationUrl = $this->verificationUrl($notifiable);
+        $expiresInHours = (int) ceil(((int) config('auth.verification.expire', 1440)) / 60);
 
         // Log email sending attempt
         Log::info('Sending email verification notification', [
@@ -46,14 +46,17 @@ class VerifyEmail extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject('Confirme seu endereço de email - CamUp')
-            ->greeting('Olá, ' . $notifiable->name . '!')
-            ->line('Obrigado por se cadastrar no CamUp! Para começar a usar sua conta, precisamos verificar seu endereço de email.')
-            ->line('**Email:** ' . $notifiable->email)
-            ->line('Clique no botão abaixo para confirmar seu endereço de email e ativar sua conta:')
-            ->action('Verificar Meu Email', $verificationUrl)
-            ->line('Este link é válido por **24 horas** e só pode ser usado uma vez.')
-            ->line('**Importante:** Se você não criou uma conta no CamUp, ignore este email. Nenhuma ação adicional é necessária.')
-            ->salutation('Atenciosamente, Equipe CamUp');
+            ->view([
+                'html' => 'emails.verify-email',
+                'text' => 'emails.verify-email-text',
+            ], [
+                'userName' => $notifiable->name,
+                'userEmail' => $notifiable->email,
+                'verificationUrl' => $verificationUrl,
+                'expiresInHours' => $expiresInHours,
+                'appName' => config('app.name', 'CamUp'),
+                'logoUrl' => config('mail.logo_url'),
+            ]);
     }
 
     /**
@@ -64,9 +67,11 @@ class VerifyEmail extends Notification implements ShouldQueue
      */
     protected function verificationUrl($notifiable)
     {
+        $expirationMinutes = (int) config('auth.verification.expire', 1440);
+
         return \Illuminate\Support\Facades\URL::temporarySignedRoute(
             'verification.verify',
-            \Illuminate\Support\Carbon::now()->addMinutes(1440), // 24 horas
+            \Illuminate\Support\Carbon::now()->addMinutes($expirationMinutes),
             [
                 'id' => $notifiable->getKey(),
                 'hash' => sha1($notifiable->getEmailForVerification()),
