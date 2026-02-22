@@ -80,9 +80,7 @@ class CategoryController extends Controller
                 'string',
                 'max:35',
                 'regex:/^[\p{L}0-9\s\-\/\&.,]+$/u',
-                Rule::unique('categories', 'name')
-                    ->where('user_id', Auth::id())
-                    ->ignore($categoryId),
+                Rule::unique('categories', 'name')->where('user_id', Auth::id())->ignore($categoryId),
             ],
             'type' => 'required|in:income,expense',
             'color' => 'nullable|regex:/^#[0-9A-Fa-f]{6}$/',

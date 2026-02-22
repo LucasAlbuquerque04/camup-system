@@ -112,11 +112,11 @@
         <div>
            <x-card title="Ações Rápidas">
                 <div class="grid grid-cols-1 gap-4">
-                    <x-quick-action href="{{ route('transactions.create') }}" icon="plus-circle">
-                        Nova Receita
+                    <x-quick-action href="{{ route('transactions.index') }}" icon="plus-circle">
+                        Nova Transação
                     </x-quick-action>
-                    <x-quick-action href="{{ route('transactions.create') }}?type=expense" icon="minus-circle">
-                        Nova Despesa
+                    <x-quick-action href="{{ route('transactions.index') }}" icon="chart">
+                        Ver Transações
                     </x-quick-action>
                     <x-quick-action href="{{ route('categories.index') }}" icon="tag">
                         Gerenciar Categorias
